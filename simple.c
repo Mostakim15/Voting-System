@@ -28,13 +28,22 @@ void saveSuggestion(int voterId, char *suggestion);
 
 int main() {
     Voter voters[100];
-    Candidate candidates[50];
-    int admin;
-
+    Candidate candidates[50];    
     int vCount = loadVoters(voters, 100);
     int cCount = loadCandidates(candidates, 50);
+    char password[MAX_NAME];
+    char ch;
+    int i = 0;
+
     printf("Please set your admin password:");
-    scanf("%d",&admin);
+    while ((ch = getch()) != 13)
+        {
+            password[i++] = ch;
+            printf("*");
+        }
+    password[i] = '\0';
+    printf("\n");
+    printf("----Admin password set successfully!-----\n");
 
     int choice;
     do {
@@ -52,13 +61,25 @@ int main() {
             saveCandidates(candidates, cCount);
         } else if (choice == 2) {
             int pass;
+            int attempts = 0;
             printf("Please enter your admin password must be integer:");
-            scanf("%d",&pass);
-            if (pass == admin){
-                viewResults(candidates, cCount);
-            }
-            else{
-                return 0;
+            scanf("%d", &pass);
+
+            while (attempts < 2) {
+                if (pass == (atoi(password))) {
+                    viewResults(candidates, cCount);
+                    return 0;
+                } else {
+                    attempts++;
+                    printf("Incorrect password. Attempts left: %d\n", 3 - attempts);
+                    printf("Please enter your admin password must be integer:) ");
+                    scanf("%d", &pass);
+                    if (attempts == 2) {
+                        printf("\n");
+                        printf("--------Too many incorrect attempts. Exiting------\n");
+                        continue;
+                    }
+                }
             }
         }
     } while (choice != 3);
@@ -71,7 +92,7 @@ int loadVoters(Voter voters[], int max) {
     if (!f) { printf("Error: voters.txt not found\n"); exit(1); }
     int count = 0;
     while (fscanf(f, "%d,%49[^,],%d\n", &voters[count].id, voters[count].name, &voters[count].hasVoted) == 3) {
-        count++;
+        count++;;
         if (count >= max) break;
     }
     fclose(f);
