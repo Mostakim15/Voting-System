@@ -35,7 +35,7 @@ int main() {
     char ch;
     int i = 0;
 
-    printf("Please set your admin password:");
+    printf("Please set your admin password use only numbers:");
     while ((ch = getch()) != 13)
         {
             password[i++] = ch;
